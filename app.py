@@ -148,15 +148,15 @@ for label, sheet_name_a, sheet_name_b in pairs:
             # Legend
             cols = st.columns(3)
             cols[0].markdown(
-                '<span style="background-color:#fff3cd;padding:2px 8px;border-radius:4px;">Changed</span>',
+                '<span style="background-color:#fff3cd;color:black;padding:2px 8px;border-radius:4px;">Changed</span>',
                 unsafe_allow_html=True,
             )
             cols[1].markdown(
-                '<span style="background-color:#d4edda;padding:2px 8px;border-radius:4px;">Added in B</span>',
+                '<span style="background-color:#d4edda;color:black;padding:2px 8px;border-radius:4px;">Added in B</span>',
                 unsafe_allow_html=True,
             )
             cols[2].markdown(
-                '<span style="background-color:#f8d7da;padding:2px 8px;border-radius:4px;">Removed from A</span>',
+                '<span style="background-color:#f8d7da;color:black;padding:2px 8px;border-radius:4px;">Removed from A</span>',
                 unsafe_allow_html=True,
             )
 
