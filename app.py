@@ -95,42 +95,55 @@ if not file_a or not file_b:
 sheets_a = load_excel(file_a)
 sheets_b = load_excel(file_b)
 
-names_a = set(sheets_a.keys())
-names_b = set(sheets_b.keys())
-shared = sorted(names_a & names_b)
-only_a = sorted(names_a - names_b)
-only_b = sorted(names_b - names_a)
+names_a = list(sheets_a.keys())
+names_b = list(sheets_b.keys())
+shared = sorted(set(names_a) & set(names_b))
 
-# --- Sheet selection ---
-st.subheader("Sheets")
+# --- Sheet pairing ---
+st.subheader("Sheet Pairing")
 
-if only_a:
-    st.warning(f"Only in File A: {', '.join(only_a)}")
-if only_b:
-    st.warning(f"Only in File B: {', '.join(only_b)}")
+# Auto-pair sheets with matching names, then let user manually pair the rest
+pairs = []
 
-if not shared:
-    st.error("No sheets in common between the two files.")
-    st.stop()
+if shared:
+    st.markdown("**Auto-matched sheets** (same name in both files):")
+    auto_selected = st.multiselect("Select auto-matched sheets", shared, default=shared)
+    for name in auto_selected:
+        pairs.append((name, name, name))
 
-selected = st.multiselect("Select sheets to compare", shared, default=shared)
+# Manual pairing for unmatched or additional comparisons
+unmatched_a = [n for n in names_a if n not in shared]
+unmatched_b = [n for n in names_b if n not in shared]
 
-if not selected:
-    st.info("Select at least one sheet to compare.")
+st.markdown("**Manual pairing** — compare sheets with different names:")
+num_manual = st.number_input("Number of manual pairs", min_value=0, max_value=min(len(names_a), len(names_b)), value=min(1, len(unmatched_a), len(unmatched_b)) if (unmatched_a and unmatched_b) else 0, step=1)
+
+for i in range(int(num_manual)):
+    col1, col2 = st.columns(2)
+    default_a = unmatched_a[i] if i < len(unmatched_a) else names_a[0]
+    default_b = unmatched_b[i] if i < len(unmatched_b) else names_b[0]
+    with col1:
+        sheet_a = st.selectbox(f"File A sheet (pair {i+1})", names_a, index=names_a.index(default_a), key=f"manual_a_{i}")
+    with col2:
+        sheet_b = st.selectbox(f"File B sheet (pair {i+1})", names_b, index=names_b.index(default_b), key=f"manual_b_{i}")
+    pairs.append((f"{sheet_a} ↔ {sheet_b}", sheet_a, sheet_b))
+
+if not pairs:
+    st.info("No sheet pairs to compare. Use auto-matched or manual pairing above.")
     st.stop()
 
 # --- Compare ---
 all_stats = []
 
-for sheet_name in selected:
-    display_df, status_df, stats = compare_sheets(sheets_a[sheet_name], sheets_b[sheet_name])
-    stats["Sheet"] = sheet_name
+for label, sheet_name_a, sheet_name_b in pairs:
+    display_df, status_df, stats = compare_sheets(sheets_a[sheet_name_a], sheets_b[sheet_name_b])
+    stats["Sheet"] = label
     stats["Total Cells"] = stats["Added"] + stats["Removed"] + stats["Changed"] + stats["Unchanged"]
     all_stats.append(stats)
 
     has_diff = stats["Added"] + stats["Removed"] + stats["Changed"]
 
-    with st.expander(f"📄 {sheet_name} — {'⚠️ ' + str(has_diff) + ' differences' if has_diff else '✅ No differences'}", expanded=bool(has_diff)):
+    with st.expander(f"📄 {label} — {'⚠️ ' + str(has_diff) + ' differences' if has_diff else '✅ No differences'}", expanded=bool(has_diff)):
         if has_diff:
             # Legend
             cols = st.columns(3)
