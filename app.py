@@ -23,7 +23,8 @@ def load_excel(uploaded_file):
 def compare_sheets(df_a: pd.DataFrame, df_b: pd.DataFrame):
     """Compare two DataFrames cell-by-cell. Returns (display_df, status_df, stats)."""
     # Build common shape
-    all_cols = df_a.columns.union(df_b.columns)
+    # Keep File A column order, then append any extra columns from B
+    all_cols = list(df_a.columns) + [c for c in df_b.columns if c not in df_a.columns]
     max_rows = max(len(df_a), len(df_b))
     idx = range(max_rows)
 
