@@ -65,7 +65,7 @@ def style_dataframe(display_df, status_df):
         "added": "background-color: #d4edda; color: black",
         "removed": "background-color: #f8d7da; color: black",
         "changed": "background-color: #fff3cd; color: black",
-        "unchanged": "color: black",
+        "unchanged": "",
     }
 
     def apply_colors(val):
