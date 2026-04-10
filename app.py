@@ -13,8 +13,11 @@ def load_excel(uploaded_file):
     sheets = pd.read_excel(
         uploaded_file, sheet_name=None, dtype=str, engine="openpyxl", header=0
     )
-    # Replace NaN with empty string for clean comparison
-    return {name: df.fillna("") for name, df in sheets.items()}
+    # Normalize column names (replace newlines/extra whitespace) and fill NaN
+    for name, df in sheets.items():
+        df.columns = [" ".join(str(c).split()) for c in df.columns]
+        sheets[name] = df.fillna("")
+    return sheets
 
 
 def compare_sheets(df_a: pd.DataFrame, df_b: pd.DataFrame):
