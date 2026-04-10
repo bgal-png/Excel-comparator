@@ -152,7 +152,7 @@ for label, sheet_name_a, sheet_name_b in pairs:
                 unsafe_allow_html=True,
             )
             cols[1].markdown(
-                '<span style="background-color:#d4edda;color:black;padding:2px 8px;border-radius:4px;">Added in B</span>',
+                '<span style="background-color:#d4edda;color:black;padding:2px 8px;border-radius:4px;">Missing in A</span>',
                 unsafe_allow_html=True,
             )
             cols[2].markdown(
