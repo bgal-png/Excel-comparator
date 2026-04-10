@@ -62,10 +62,10 @@ def compare_sheets(df_a: pd.DataFrame, df_b: pd.DataFrame):
 def style_dataframe(display_df, status_df):
     """Apply color styling based on the status matrix."""
     color_map = {
-        "added": "background-color: #d4edda",
-        "removed": "background-color: #f8d7da",
-        "changed": "background-color: #fff3cd",
-        "unchanged": "",
+        "added": "background-color: #d4edda; color: black",
+        "removed": "background-color: #f8d7da; color: black",
+        "changed": "background-color: #fff3cd; color: black",
+        "unchanged": "color: black",
     }
 
     def apply_colors(val):
