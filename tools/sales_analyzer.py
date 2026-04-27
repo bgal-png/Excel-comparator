@@ -110,8 +110,8 @@ def render():
     # Top-line metrics
     st.markdown(
         f"<div style='background:#EEF2FF;border-left:4px solid #4F46E5;"
-        f"padding:12px 16px;border-radius:6px;margin-bottom:16px;'>"
-        f"<strong>📅 {month_label}</strong></div>",
+        f"padding:12px 16px;border-radius:6px;margin-bottom:16px;color:#0F172A;'>"
+        f"<strong style='color:#0F172A;'>📅 {month_label}</strong></div>",
         unsafe_allow_html=True,
     )
 
