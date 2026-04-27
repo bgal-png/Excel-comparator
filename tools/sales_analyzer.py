@@ -103,17 +103,40 @@ def render():
     df["type"] = df["commonName"].apply(extract_type)
     df_typed = df[df["type"].isin(["Eyeglasses", "Sunglasses"])].copy()
 
-    # Month info banner
-    months_present = df_typed["orderMonth"].dropna().astype(str).str.zfill(2).tolist()
-    month_label = format_months(months_present)
+    # Normalize month column
+    df_typed["orderMonth"] = df_typed["orderMonth"].fillna("").astype(str).str.zfill(2)
 
-    # Top-line metrics
+    months_in_data = sorted({m for m in df_typed["orderMonth"].unique() if m in MONTH_NAMES})
+    full_label = format_months(months_in_data)
+
+    # Top-line month banner (shows ALL months in the file)
     st.markdown(
         f"<div style='background:#EEF2FF;border-left:4px solid #4F46E5;"
         f"padding:12px 16px;border-radius:6px;margin-bottom:16px;color:#0F172A;'>"
-        f"<strong style='color:#0F172A;'>📅 {month_label}</strong></div>",
+        f"<strong style='color:#0F172A;'>📅 {full_label}</strong></div>",
         unsafe_allow_html=True,
     )
+
+    # Month filter — only show when there are 2+ months
+    if len(months_in_data) > 1:
+        month_options = [MONTH_NAMES[m] for m in months_in_data]
+        # Default to the latest month (most recent = "last month" they typically want)
+        default_month = [month_options[-1]]
+        selected_month_names = st.multiselect(
+            "🗓 Filter by month",
+            month_options,
+            default=default_month,
+            help="Pick one or more months to analyze. Defaults to the latest month.",
+        )
+        if not selected_month_names:
+            st.info("Select at least one month above.")
+            return
+        # Map back to month numbers
+        name_to_num = {v: k for k, v in MONTH_NAMES.items()}
+        selected_months = [name_to_num[n] for n in selected_month_names]
+        df_typed = df_typed[df_typed["orderMonth"].isin(selected_months)].copy()
+        st.caption(f"Showing data for: **{format_months(selected_months).replace('Data from ', '')}** "
+                   f"({len(df_typed):,} glasses orders)")
 
     cols = st.columns(4)
     cols[0].metric("Total orders", f"{len(df):,}")
