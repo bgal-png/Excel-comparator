@@ -110,12 +110,7 @@ def render():
     full_label = format_months(months_in_data)
 
     # Top-line month banner (shows ALL months in the file)
-    st.markdown(
-        f"<div style='background:#EEF2FF;border-left:4px solid #4F46E5;"
-        f"padding:12px 16px;border-radius:6px;margin-bottom:16px;color:#0F172A;'>"
-        f"<strong style='color:#0F172A;'>📅 {full_label}</strong></div>",
-        unsafe_allow_html=True,
-    )
+    st.info(f"📅 {full_label}")
 
     # Month filter — only show when there are 2+ months
     if len(months_in_data) > 1:
