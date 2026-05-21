@@ -1,7 +1,7 @@
 """Tool Hub — a collection of internal tools."""
 import streamlit as st
 
-from tools import comparator, sales_analyzer
+from tools import comparator, sales_analyzer, image_renamer
 
 
 st.set_page_config(
@@ -21,6 +21,10 @@ TOOLS = {
     "🕶️ Sales Analyzer": {
         "desc": "Top-selling glasses per eshop, split by Eyeglasses & Sunglasses.",
         "module": sales_analyzer,
+    },
+    "🏷️ Image Renamer": {
+        "desc": "Rename glasses product images to match a canonical product list.",
+        "module": image_renamer,
     },
 }
 
