@@ -348,14 +348,22 @@ def render():
         "The tool maps between them and replaces `/` with `_` for Windows compatibility."
     )
 
+    # Counter used to reset the file_uploader widget when "Clear" is pressed
+    if "ren_uploader_key" not in st.session_state:
+        st.session_state["ren_uploader_key"] = 0
+
     with st.sidebar:
         st.header("Inputs")
         uploaded_images = st.file_uploader(
             "Upload images (.jpg / .png)",
             type=["jpg", "jpeg", "png"],
             accept_multiple_files=True,
-            key="ren_images",
+            key=f"ren_images_{st.session_state['ren_uploader_key']}",
         )
+        if uploaded_images:
+            if st.button("🗑️ Clear all uploaded images", use_container_width=True):
+                st.session_state["ren_uploader_key"] += 1
+                st.rerun()
 
     st.subheader("Product list")
     list_text = st.text_area(
